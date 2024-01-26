@@ -61,8 +61,8 @@ class Train{
         return cnt++;
     }
 
-    static vector<int> cnfSeats; //just for to store the confirmed Seats
-    static vector<int> wlSeats; // just to store the id of waiting seats
+    static vector<int> cnfSeatsIds; //just for to store the confirmed Seats
+    static vector<int> wlSeatsIds; // just to store the id of waiting seats
 
     int trainNo;
     char from;
@@ -79,10 +79,10 @@ class Train{
         this->to='E';
         stops={'A','B','C', 'D', 'E'};
 
-        for(int i: cnfSeats) {
+        for(int i: cnfSeatsIds) {
             totalAvailableSeats[i]= new Seat(i, "CNF");
         }
-        for(int i: wlSeats) {
+        for(int i: wlSeatsIds) {
             totalWaitingSeats[i]= new Seat(i, "WL");
         }
     }
@@ -347,8 +347,8 @@ class Train{
 
 };
 
-vector<int> Train::cnfSeats= {1,2,3,4,5,6,7,8};
-vector<int> Train::wlSeats= {9,10};
+vector<int> Train::cnfSeatsIds= {1,2,3,4,5,6,7,8};
+vector<int> Train::wlSeatsIds= {9,10};
 int Train::cnt=1;
 int Ticket::cnt=1;
 
