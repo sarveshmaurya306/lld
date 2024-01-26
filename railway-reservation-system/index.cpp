@@ -152,7 +152,7 @@ class Train{
                 //! no seats available CNF & WL both are filled write a logic to revert back booked ticket
                 // TODO roll back logic to be implemented if required;
 
-                cout<<"!!!!!!!!! seat not found !!!!!!"; 
+                cout<<"!!!!!!!!! Ops looks like some seat are failing to book the ticket !!!!!! \n\n"; 
                 return nullptr;
             } else if(s->seatType=="CNF") {
                 cnfSeats.push_back(s);
@@ -182,6 +182,37 @@ class Train{
 
     }
 
+    void confirmWaitingTickets() {
+
+        for(auto it: totalTickets) {
+            int ticketId= it.first;
+            Ticket* ticket= it.second;
+
+            if(ticket->ticketType=="CNF") continue;
+
+            vector<Seat*> ticketWaiting= ticket->waitingSeats;
+
+            vector<Seat*> newWaitingSeats;
+
+
+            for(int i=0;i<ticketWaiting.size();i++) {
+                Seat* currSeat= ticketWaiting[i];
+                Seat* confirmedSeat= bookSingleSeat(ticket->from, ticket->to);
+
+                if(confirmedSeat) { //seat has been booked;
+                    currSeat->cancelThisSeat(ticket->from, ticket->to); //free the waiting least seat
+                    ticket->bookedSeats.push_back(confirmedSeat);
+                } else{
+                    newWaitingSeats.push_back(currSeat);
+                }
+            }
+
+            ticket->waitingSeats=newWaitingSeats;
+            if(newWaitingSeats.size()==0){
+                ticket->ticketType="CNF";
+            }
+        }
+    }
 
     //! partial cancelation available;
     bool cancelTicket(Ticket* ticket, vector<int> cancelOnlyTheseSeats) {
@@ -245,11 +276,14 @@ class Train{
             ticket->waitingSeats=newWaitingSeats;
         }
 
+        //!removed a booked ticket now time to book all the waiting list tickets
+        confirmWaitingTickets();
+
         return true;
     }
 
     void printChart() { //print the chart of current train;
-        cout<<" "<<"   ";
+        cout<<" "<<"  ";
         for(char i='A';i<='E';i++) cout<<i<<" ";
         cout<<endl;
 
@@ -257,8 +291,15 @@ class Train{
             int seatId=it.first;
             Seat* seat= it.second;
 
-            cout<<seatId<<"-->";
+            cout<<seatId<<"  ";
             map<char, int> mp;
+            mp['A']=0;
+            mp['B']=0;
+            mp['C']=0;
+            mp['D']=0;
+            mp['E']=0;
+
+
             vector<pair<char,char>> currSeatBookedFromto= seat->currSeatBookedFromTo;
             for(auto [from, to]: currSeatBookedFromto) {
                 for(char i=from;i<=to;i++) {
@@ -268,6 +309,7 @@ class Train{
 
             for(auto it: mp) {
                 if(it.second>0) cout<<"* ";
+                else cout<<"- ";
             }
             cout<<endl;
         }
@@ -278,8 +320,15 @@ class Train{
             int seatId=it.first;
             Seat* seat= it.second;
 
-            cout<<seatId<<"-->";
+            cout<<seatId<<"  ";
             map<char, int> mp;
+            mp['A']=0;
+            mp['B']=0;
+            mp['C']=0;
+            mp['D']=0;
+            mp['E']=0;
+
+
             vector<pair<char,char>> currSeatBookedFromto= seat->currSeatBookedFromTo;
             for(auto [from, to]: currSeatBookedFromto) {
                 for(char i=from;i<=to;i++) {
@@ -289,6 +338,7 @@ class Train{
 
             for(auto it: mp) {
                 if(it.second>0) cout<<"* ";
+                else cout<<"- ";
             }
             cout<<endl;
         }
@@ -306,11 +356,24 @@ int Ticket::cnt=1;
 int main() {
     Train* t= new Train();
 
-    Ticket * t1= t->bookSeat('A','B', 10);
+    // Ticket * t1= t->bookSeat('B','E', 10);
+    Ticket * t2= t->bookSeat('A', 'B', 10);
+    Ticket * t3= t->bookSeat('B', 'E', 3);
+    
+    cout<<t2->ticketType<<" "<<t3->ticketType<<endl;
 
-    t->cancelTicket(t1, {1,4,8,10});
-    cout<<'a'<<endl;
-    t->bookSeat('A', 'B', 4);
+    t->cancelTicket(t2, {7, 8,6});
+
+    cout<<t2->ticketType<<" "<<t3->ticketType<<endl;
+
+    // Ticket * t1= t->bookSeat('A','B', 8);
+
+    // cout<<<<endl;
+    // cout<<t1->bookedSeats[0]->seatNo<<' '<<t1->bookedSeats[1]->seatNo<<endl;
+
+    // t->cancelTicket(t1, {t1->bookedSeats[0]->seatNo, t1->bookedSeats[1]->seatNo});
+    // cout<<'a'<<endl;
+    // t->bookSeat('B', 'E', 2);
     // Ticket * t2= t->bookSeat('B', 'E', 3);
     // Ticket * t3= t->bookSeat('A','B', 1);
 
@@ -328,7 +391,7 @@ int main() {
     //     cout<<t5->ticketType<<" ";
     // }
 
-    cout<<"\n\n\n"<<endl;
+    // cout<<"\n\n\n"<<endl;
 
 
     t->printChart();
