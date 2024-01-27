@@ -1,87 +1,42 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-class Animal{
+class Vehical {
     public:
-
-    string breed;
-    int age;
-    string ability;
-    static int legs;
-    Animal() {
-        this->breed="unknown";
-        this->age=0;
-        this->ability="unknown";
+    static int cnt;
+    void virtual sound() {
+        cout<<" i am vehical "<<cnt<<endl;
     }
-
-    Animal(string breed, int age, string ability) {
-        this->breed=breed;
-        this->age=age;
-        this->ability=ability;
-    }
-
-    virtual void sound() {
-        cout<<" i animal you fool"<<endl;
-    }
-
-    void setLegs(int leg) {
-        Animal::legs=leg;
-    }
-
 };
+int Vehical::cnt=10;
 
-class Human: public Animal {
+class TwoWhiler: public Vehical{
     public:
-    
-    string name;
-    int age;
-
-    Human(){
-        this->name="unknown";
-        this->age=0;
-    }
-
-    Human(string name, int age) : Animal(name, age, "human") {
-        this->name=name;
-        this->age=age;
-    }
-
     void sound() {
-        cout<<" i am human you fool"<<endl;
+        cout<<" I am two wheler vehical"<<endl;
     }
-
-    static void sayHello() {
-        cout<<"hello sarvesh"<<endl;
-    }
-
 };
-
-
-int Animal::legs=10; //defining the default value for static member;
+class ThreeWhiler: public Vehical{
+    public:
+    void sound() {
+        cout<<" I am three wheler vehical"<<endl;
+    }
+};
 
 int main() {
-    Animal *cow= new Animal("cow", 10, "milk");
-    cout<<cow->breed<<" "<<cow->age<<" "<<cow->ability<<" "<<cow->legs<<endl;
-
-    cow->setLegs(4);
-
-    Human *human= new Human("human", 22);
-    human->setLegs(2);
-
-    human->sound();
-    cow->sound();
-
+    Vehical* a= new Vehical();
+    TwoWhiler* b= new TwoWhiler();
+    ThreeWhiler* c= new ThreeWhiler();
+    
+    a->sound();
+    b->sound();
+    c->sound();
+    
     cout<<endl<<endl;
 
+    a= new TwoWhiler();
+    a->sound();
+    b->sound();
+    c->sound();
 
-    // runtime polymorphism
-    Animal *cow2;
-    Human human2;
-    cow2= &human2;
-
-    human2.sound();
-    cow2->sound();
-
-
-    Human::sayHello();
 }
