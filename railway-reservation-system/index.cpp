@@ -366,6 +366,8 @@ int main() {
 
     cout<<t2->ticketType<<" "<<t3->ticketType<<endl;
 
+    // t->bookSeat('A','B', 1);
+
     // Ticket * t1= t->bookSeat('A','B', 8);
 
     // cout<<<<endl;
